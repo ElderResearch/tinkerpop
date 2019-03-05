@@ -73,7 +73,7 @@ public class TinkerGraph implements Graph {
                 TinkerGraphCountStrategy.instance()));
     }
 
-    private static final Configuration EMPTY_CONFIGURATION = new BaseConfiguration() {{
+    protected static final Configuration EMPTY_CONFIGURATION = new BaseConfiguration() {{
         this.setProperty(Graph.GRAPH, TinkerGraph.class.getName());
     }};
 
@@ -84,7 +84,10 @@ public class TinkerGraph implements Graph {
     public static final String GREMLIN_TINKERGRAPH_GRAPH_LOCATION = "gremlin.tinkergraph.graphLocation";
     public static final String GREMLIN_TINKERGRAPH_GRAPH_FORMAT = "gremlin.tinkergraph.graphFormat";
 
-    private final TinkerGraphFeatures features = new TinkerGraphFeatures();
+    private TinkerGraphFeatures features = new TinkerGraphFeatures();
+    protected void setFeatures(TinkerGraphFeatures features) {
+		this.features = features;
+	}
 
     protected AtomicLong currentId = new AtomicLong(-1L);
     protected Map<Object, Vertex> vertices = new ConcurrentHashMap<>();
@@ -107,7 +110,7 @@ public class TinkerGraph implements Graph {
     /**
      * An empty private constructor that initializes {@link TinkerGraph}.
      */
-    private TinkerGraph(final Configuration configuration) {
+    protected TinkerGraph(final Configuration configuration) {
         this.configuration = configuration;
         vertexIdManager = selectIdManager(configuration, GREMLIN_TINKERGRAPH_VERTEX_ID_MANAGER, Vertex.class);
         edgeIdManager = selectIdManager(configuration, GREMLIN_TINKERGRAPH_EDGE_ID_MANAGER, Edge.class);
@@ -334,7 +337,7 @@ public class TinkerGraph implements Graph {
         return features;
     }
 
-    private void validateHomogenousIds(final List<Object> ids) {
+    private static void validateHomogenousIds(final List<Object> ids) {
         final Iterator<Object> iterator = ids.iterator();
         Object id = iterator.next();
         if (id == null)
@@ -353,7 +356,7 @@ public class TinkerGraph implements Graph {
         private final TinkerGraphEdgeFeatures edgeFeatures = new TinkerGraphEdgeFeatures();
         private final TinkerGraphVertexFeatures vertexFeatures = new TinkerGraphVertexFeatures();
 
-        private TinkerGraphFeatures() {
+        protected TinkerGraphFeatures() {
         }
 
         @Override
@@ -382,7 +385,7 @@ public class TinkerGraph implements Graph {
 
         private final TinkerGraphVertexPropertyFeatures vertexPropertyFeatures = new TinkerGraphVertexPropertyFeatures();
 
-        private TinkerGraphVertexFeatures() {
+        protected TinkerGraphVertexFeatures() {
         }
 
         @Override
@@ -408,7 +411,7 @@ public class TinkerGraph implements Graph {
 
     public class TinkerGraphEdgeFeatures implements Features.EdgeFeatures {
 
-        private TinkerGraphEdgeFeatures() {
+        protected TinkerGraphEdgeFeatures() {
         }
 
         @Override
@@ -424,7 +427,7 @@ public class TinkerGraph implements Graph {
 
     public class TinkerGraphGraphFeatures implements Features.GraphFeatures {
 
-        private TinkerGraphGraphFeatures() {
+        protected TinkerGraphGraphFeatures() {
         }
 
         @Override
